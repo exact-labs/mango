@@ -69,7 +69,11 @@ fn main() {
         },
 
         Some(Commands::Set { key, value }) => match cli::kv::set(&cli.path, key, value) {
-            Ok(()) => println!("{}", format!("added key '{key}' with value '{value}'").green()),
+            Ok(()) => {
+                if !cli.verbose.is_silent() {
+                    println!("{}", format!("added key '{key}' with value '{value}'").green())
+                }
+            }
             Err(err) => {
                 log::warn!("{err}");
                 crashln!("{}", helpers::store_error(&cli.path, &format!("Unable to set '{key}'"), "is the store path correct?"));
@@ -77,7 +81,11 @@ fn main() {
         },
 
         Some(Commands::Del { key }) => match cli::kv::remove(&cli.path, key) {
-            Ok(()) => println!("{}", format!("removed key '{}'", key).red()),
+            Ok(()) => {
+                if !cli.verbose.is_silent() {
+                    println!("{}", format!("removed key '{}'", key).red())
+                }
+            }
             Err(err) => {
                 log::warn!("{err}");
                 crashln!("Unable to remove '{key}', does it exist?");
